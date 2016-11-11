@@ -27,7 +27,7 @@ public class Server
         String clientMessage = br.readLine();
         System.out.println("Message from Client " + clientMessage);
 
-        String returnMessage = clientMessage + "BLABLABLA\n";
+        String returnMessage = clientMessage;
 
 
         //Sending the response back to the client.
@@ -38,12 +38,5 @@ public class Server
         bw.flush();
         System.out.println("Message sent to the client is " + returnMessage);
 
-    }
-
-    public static void main(String[] args) throws IOException {
-    	Server server = new Server(9999);
-        while (true) {
-            server.readMessages();
-        }
     }
 }

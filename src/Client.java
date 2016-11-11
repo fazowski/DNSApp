@@ -1,5 +1,4 @@
 import java.io.*;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -39,7 +38,9 @@ public class Client {
                 this.sendMessage(userAddressInput);
                 break;
             case 2:
+            	System.out.println("Closing program.");
                 socket.close();
+                input.close();
                 break;
         }
     }
@@ -61,12 +62,29 @@ public class Client {
         BufferedReader br = new BufferedReader(isr);
         String getMessage = br.readLine();
         System.out.println("String received : " + getMessage);
-    }
-
-    public static void main(String args[]) throws IOException {
-        Client newClient = new Client("localhost", 9999);
-        while (true) {
-            newClient.menu();
+        
+        /*
+         * Splitting receive Message
+         * splitRecMessage[0] - address
+         * splitRecMessage[1] - IP
+         */
+        String[] splitRecMessage = getMessage.split(" ");
+        
+        // Check if returned message is equal to sent message
+        if(sendMessage == splitRecMessage[0]){
+        	System.out.println("SUKCES");
+        	System.exit(0);
         }
+        else {
+        	String[] splitAddress = sendMessage.split(".");
+        	int index;
+        	for (int i = 0; i < splitAddress.length; i++) {
+        		if (splitAddress[i] == splitRecMessage[0]) {
+        			index = i;
+        		}
+        	}
+        }
+        //send(splitAddress[index]+splitRecMessage[0], splitRecMessage[1]);
+        
     }
 }
