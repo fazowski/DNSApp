@@ -24,10 +24,9 @@ public class Server
     	System.out.println("Waiting for Client message...");
     	String clientMessage = in.readLine();
     	System.out.println("Client: " + clientMessage);
-    	if (clientMessage == "www.wp.pl\n") {
-    		String ip = "192.168.0.1";
-    		System.out.println("www.wp.pl -> 192.168.0.1");
-    		out.writeBytes(clientMessage + ip + "\n");
+    	if (clientMessage.equals("www.google.com")) {
+    		System.out.println("www.google.com -> 8.8.8.8");
+    		out.writeBytes("www.google.com -> 8.8.8.8\n");
     		out.flush();
     		System.out.println("Send response to Client");
     	}
@@ -35,7 +34,7 @@ public class Server
     		System.out.println("ERROR. NOT FOUND!");
     		out.writeBytes("ERROR. NOT FOUND\n");
     		out.flush();
-    	}	  	
+    	}	
 
     }
 }
