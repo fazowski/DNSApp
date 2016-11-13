@@ -4,39 +4,38 @@ import java.net.Socket;
 
 public class Server
 {
-
-    private static Socket socket;
-    ServerSocket serverSocket;
-    int port;
+	ServerSocket server;
+	Socket clientSocket;
+	DataOutputStream out;
+	BufferedReader in;	
 
     Server(int port) throws IOException{
-        this.port = port;
-        this.startServer();
+    	System.out.println("Binding to port " + port + "...");
+        server = new ServerSocket(port);
+        System.out.println("Server started: " + server);
+        System.out.println("Waiting for client...");
+        clientSocket = server.accept();
+        System.out.println("Client connected.");
+        out = new DataOutputStream(clientSocket.getOutputStream());
+        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     }
 
-    void startServer() throws IOException {
-        serverSocket = new ServerSocket(this.port);
-        System.out.println("Server started at port " + this.port);
-        socket = serverSocket.accept();
-    }
     void readMessages() throws IOException {
-        //Reading the message from the client
-        InputStream is = socket.getInputStream();
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(isr);
-        String clientMessage = br.readLine();
-        System.out.println("Message from Client " + clientMessage);
-
-        String returnMessage = clientMessage;
-
-
-        //Sending the response back to the client.
-        OutputStream os = socket.getOutputStream();
-        OutputStreamWriter osw = new OutputStreamWriter(os);
-        BufferedWriter bw = new BufferedWriter(osw);
-        bw.write(returnMessage);
-        bw.flush();
-        System.out.println("Message sent to the client is " + returnMessage);
+    	System.out.println("Waiting for Client message...");
+    	String clientMessage = in.readLine();
+    	System.out.println("Client: " + clientMessage);
+    	if (clientMessage == "www.wp.pl\n") {
+    		String ip = "192.168.0.1";
+    		System.out.println("www.wp.pl -> 192.168.0.1");
+    		out.writeBytes(clientMessage + ip + "\n");
+    		out.flush();
+    		System.out.println("Send response to Client");
+    	}
+    	else {
+    		System.out.println("ERROR. NOT FOUND!");
+    		out.writeBytes("ERROR. NOT FOUND\n");
+    		out.flush();
+    	}	  	
 
     }
 }
