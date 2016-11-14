@@ -40,8 +40,8 @@ public class Client {
     }
 
     void sendMessage(String address) throws IOException{
-        //Send the message to the server       
-        out.writeBytes(address + "\n");
+        //Send the message to the server
+        out.writeBytes("localhost;" + address + "\n");
         out.flush();
         System.out.println("Send to Server: " + address);
         

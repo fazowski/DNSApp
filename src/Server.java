@@ -24,7 +24,10 @@ public class Server
     	System.out.println("Waiting for Client message...");
     	String clientMessage = in.readLine();
     	System.out.println("Client: " + clientMessage);
-    	if (clientMessage.equals("www.google.com")) {
+    	String[] splitMessage = clientMessage.split(";");
+    	System.out.println(splitMessage[0] + ", " + splitMessage[1]);
+    	System.out.println(splitMessage[1]);
+    	if (splitMessage[1].equals("www.google.com")) {
     		System.out.println("www.google.com -> 8.8.8.8");
     		out.writeBytes("www.google.com -> 8.8.8.8\n");
     		out.flush();
