@@ -47,6 +47,15 @@ public class Client {
         
         System.out.println("Waiting for server response...");
         String serverResponse = in.readLine();
-        System.out.println("Server: " + serverResponse );        
+        System.out.println("Server: " + serverResponse );       
+        if(serverResponse.equals(address)) {
+        	System.out.println("=================");
+        	System.out.println(serverResponse);
+        	System.out.println("=================");
+        }
+        else {
+        	String[] splitServerResponse = serverResponse.split(";");
+        	//sendMessage(address, splitServerResponse[1]);
+        }
     }
 }
