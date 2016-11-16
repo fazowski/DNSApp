@@ -34,7 +34,8 @@ public class Client {
                 input.close();
                 in.close();
                 out.close();
-                clientSocket.close();                
+                clientSocket.close();     
+                System.exit(0);
                 break;
         }
     }
@@ -55,7 +56,7 @@ public class Client {
         }
         else {
         	String[] splitServerResponse = serverResponse.split(";");
-        	//sendMessage(address, splitServerResponse[1]);
+        	System.out.println("\n" + splitServerResponse[0] + "\t" + splitServerResponse[1]);
         }
     }
 }

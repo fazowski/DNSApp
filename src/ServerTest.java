@@ -1,9 +1,8 @@
-import java.io.IOException;
 
 public class ServerTest {
 
-	public static void main(String[] args) throws IOException {
-    	Server server = new Server(4444);
+	public static void main(String[] args) throws Exception {
+    	Server server = new Server(4445);
         while (true) {
             server.readMessages();
         }

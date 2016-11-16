@@ -1,9 +1,9 @@
 import java.io.*;
-import java.util.*;
 
-public class Main {
-	public static void main(String[] args) throws Exception {
-	    DNSProtos.Address.Builder localhost = DNSProtos.Address.newBuilder().setDomain("localhost").setIp("0.0.0.0");
+public class Protos {
+	static DNSProtos.Address.Builder localhost;
+	Protos() throws Exception {
+		localhost = DNSProtos.Address.newBuilder().setDomain("localhost").setIp("0.0.0.0");
 	    DNSProtos.Address.KnownAddress pl = DNSProtos.Address.KnownAddress.newBuilder().setDmn("pl").setIps("1.2.3.4").build();
 	    DNSProtos.Address.KnownAddress com = DNSProtos.Address.KnownAddress.newBuilder().setDmn("com").setIps("5.6.7.8").build();
 	    DNSProtos.Address.KnownAddress org = DNSProtos.Address.KnownAddress.newBuilder().setDmn("org").setIps("9.10.11.12").build();
@@ -28,10 +28,13 @@ public class Main {
 	    FileOutputStream output = new FileOutputStream("dnstest.txt");
 	    addressList.build().writeTo(output);
 	    output.close();
+	}
+	public static void main(String[] args) throws Exception {
+	    
 	    
 	    //DNSProtos.AddressList addressRead = DNSProtos.AddressList.parseFrom(new FileInputStream("dnstest.txt"));
 	    //PRINT(addressRead);
-	    checkserver("poznan.pl", localhost);
+	    //checkserver("poznan.pl", localhost);
 	}
 	
 	static void PRINT(DNSProtos.AddressList addressList) {
@@ -50,7 +53,7 @@ public class Main {
 		}
 	}
 	
-	static void checkserver(String query, DNSProtos.Address.Builder address) {
+	static String checkserver(String query, DNSProtos.Address.Builder address) {
 		System.out.println("---------------------------------------------");
 		
 		boolean found = false;
@@ -95,9 +98,13 @@ public class Main {
 			String[] splitFound = foundAddress.split(";");
 			System.out.println("Domain: " + splitFound[0]);
 			System.out.println("IP: " + splitFound[1]);
+			return foundAddress;
 		}
 		else {
-			System.out.println("Sorry. Your query was not found");
+			return "Sorry. Your query was not found";
 		}
+	}
+	String serverMessage(String query) {
+		return checkserver(query, localhost);
 	}
 }

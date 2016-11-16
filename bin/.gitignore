@@ -12,5 +12,6 @@
 /DNSProtos$AddressListOrBuilder.class
 /DNSProtos$AddressOrBuilder.class
 /DNSProtos.class
-/Main.class
-/DNSProto.proto
+/Protos.class
+/Server.class
+/ServerTest.class

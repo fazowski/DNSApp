@@ -1,0 +1,17 @@
+option java_outer_classname = "DNSProtos";
+
+message Address {
+    required string domain = 1;
+    required string ip = 2;
+
+    message KnownAddress {
+        optional string dmn = 1;
+        optional string ips = 2;
+    }
+
+    repeated KnownAddress knownaddress = 3;
+}
+
+message AddressList {
+    repeated  Address address = 1;
+}
