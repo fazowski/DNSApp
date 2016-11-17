@@ -29,7 +29,7 @@ public class Server {
     	System.out.println(splitMessage[0] + ", " + splitMessage[1]);
     	System.out.println(splitMessage[1]);
     	
-    	String send = protoBuf.serverMessage(splitMessage[1]);
+    	String send = protoBuf.serverMessage(splitMessage[1], splitMessage[0]);
     	System.out.println("\n" + send);
     	out.writeBytes(send + "\n");
     	out.flush();

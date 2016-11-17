@@ -40,23 +40,45 @@ public class Client {
         }
     }
 
-    void sendMessage(String address) throws IOException{
+    void sendMessage(String address) throws IOException {
         //Send the message to the server
-        out.writeBytes("localhost;" + address + "\n");
+        out.writeBytes("0.0.0.0;" + address + "\n");
         out.flush();
         System.out.println("Send to Server: " + address);
         
         System.out.println("Waiting for server response...");
         String serverResponse = in.readLine();
-        System.out.println("Server: " + serverResponse );       
-        if(serverResponse.equals(address)) {
+        System.out.println("Server: " + serverResponse ); 
+        String[] splitServerResponse = serverResponse.split(";");
+        if(splitServerResponse[0].equals(address)) {
         	System.out.println("=================");
         	System.out.println(serverResponse);
         	System.out.println("=================");
         }
-        else {
-        	String[] splitServerResponse = serverResponse.split(";");
+        else {        	
         	System.out.println("\n" + splitServerResponse[0] + "\t" + splitServerResponse[1]);
+        	sendMessage(address, splitServerResponse[1]);
         }
+    }
+    
+    void sendMessage(String address, String ip) throws IOException {
+    	out.writeBytes(ip + ";" + address + "\n");
+    	out.flush();
+    	System.out.println("Send to Server: " + address + ";" + ip);
+    	
+    	System.out.println("Waiting for server repsonse...");
+    	String serverResponse = in.readLine();
+    	System.out.println("Server: " + serverResponse);
+    	String[] splitServerResponse = serverResponse.split(";");
+    	if(splitServerResponse[0].equals(address)) {
+    		System.out.println("===================");
+    		System.out.println(serverResponse);
+    		System.out.println("===================");
+    	}
+    	else {
+    		System.out.println("\n" + splitServerResponse[0] + "\t" + splitServerResponse[1]);
+        	sendMessage(address, splitServerResponse[1]);
+    	}
+    	
     }
 }
