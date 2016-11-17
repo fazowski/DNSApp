@@ -52,13 +52,16 @@ public class Protos {
 	}
 	
 	String serverMessage(String query, String address) {
+		String[] splitQuery = query.split("\\.");
+		int lengthQuery = splitQuery.length;
+		System.out.println(lengthQuery);
 		switch(address) {
 		case "0.0.0.0":
-			return checkserver(query, localhost);
-		case "1.2.3.4":
-			return checkserver(query, dot_pl);
+			return checkserver(query, localhost, lengthQuery);
+			case "1.2.3.4":			
+			return checkserver(query, dot_pl, lengthQuery - 1);
 		case "17.18.19.20":
-			return checkserver(query, dot_poznan_pl);
+			return checkserver(query, dot_poznan_pl, lengthQuery - 2);
 		default:
 			break;
 		}
@@ -66,7 +69,7 @@ public class Protos {
 		
 	}
 	
-	static String checkserver(String query, DNSProtos.Address.Builder address) {
+	static String checkserver(String query, DNSProtos.Address.Builder address, int lengthQuery) {
 		System.out.println("---------------------------------------------");
 		
 		boolean found = false;
@@ -99,7 +102,10 @@ public class Protos {
 		
 		// Split query using "." 
 		String[] splitQuery = query.split("\\.");
-		String lastPart = splitQuery[splitQuery.length - 1];
+		String lastPart = splitQuery[lengthQuery - 1];
+		if(address.getDomain() != "localhost") {
+			lastPart += "." + address.getDomain();
+		}
 		System.out.println("\nLast part: " + lastPart);
 		
 		for (DNSProtos.Address.KnownAddress knwadr : address.getKnownaddressList()) {
