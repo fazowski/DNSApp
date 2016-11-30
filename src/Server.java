@@ -6,10 +6,11 @@ import java.net.Socket;
 public class Server {
 	ServerSocket server;
 	Socket clientSocket;
-	DataOutputStream out;
+	ObjectOutputStream out;
 	ObjectInputStream in;	
 	Protos protoBuf;
 	ClientSerial cs = null;
+	ClientSerial sender;
 	
     Server(int port) throws Exception{
     	System.out.println("Binding to port " + port + "...");
@@ -21,7 +22,7 @@ public class Server {
         clientSocket = server.accept();
         System.out.println("Client connected.");
         protoBuf = new Protos();
-        out = new DataOutputStream(clientSocket.getOutputStream());
+        out = new ObjectOutputStream(clientSocket.getOutputStream());
         in = new ObjectInputStream(clientSocket.getInputStream());
     }
 
@@ -39,7 +40,10 @@ public class Server {
     	String send = protoBuf.serverMessage(cs.address, cs.IP);
     	System.out.println("\nSending:" + send);
     	String[] splitSendMessage = send.split(";");
-    	out.writeBytes(send + "\n");
+    	sender = new ClientSerial();
+    	sender.IP = splitSendMessage[1];
+    	sender.address = splitSendMessage[0];
+    	out.writeObject(sender);
     	out.flush();
     	System.out.println("Send response to Client");
     	

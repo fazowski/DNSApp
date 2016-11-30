@@ -5,17 +5,18 @@ import java.util.Scanner;
 public class Client {
 
     private  Socket clientSocket;
-    BufferedReader in;
+    ObjectInputStream in;
     ObjectOutputStream out;
     ClientSerial cs;
+    ClientSerial receive;
     
     Client (int port) throws IOException {
-    	clientSocket = new Socket("localhost", port);
+    	clientSocket = new Socket("192.168.0.102", port);
     	out = new ObjectOutputStream(clientSocket.getOutputStream());
-    	in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));   	
+    	in = new ObjectInputStream(clientSocket.getInputStream());   	
     }
 
-    void menu() throws IOException{
+    void menu() throws IOException, ClassNotFoundException{
         System.out.println("==== MENU ====");
         System.out.println("1. Send String");
         System.out.println("2. Exit");
@@ -40,7 +41,7 @@ public class Client {
         }
     }
 
-    void sendMessage(String address) throws IOException {
+    void sendMessage(String address) throws IOException, ClassNotFoundException {
         //Send the message to the server
     	cs = new ClientSerial();
     	cs.IP = "0.0.0.0";
@@ -50,21 +51,23 @@ public class Client {
         System.out.println("Send to Server: " + address);
         
         System.out.println("Waiting for server response...");
-        String serverResponse = in.readLine();
-        System.out.println("Server: " + serverResponse ); 
-        String[] splitServerResponse = serverResponse.split(";");
-        if(splitServerResponse[0].equals(address)) {
+        receive = null;
+        receive = (ClientSerial) in.readObject();
+        //String serverResponse = in.readLine();
+        System.out.println("Server: " + receive.IP + " " + receive.address ); 
+        //String[] splitServerResponse = serverResponse.split(";");
+        if(receive.address.equals(address)) {
         	System.out.println("=================");
-        	System.out.println(serverResponse);
+        	System.out.println(">> " + receive.IP + "  " + receive.address);
         	System.out.println("=================");
         }
         else {        	
-        	System.out.println("\n" + splitServerResponse[0] + "\t" + splitServerResponse[1]);
-        	sendMessage(address, splitServerResponse[1]);
+        	System.out.println("\n" + receive.IP + "\t" + receive.address);
+        	sendMessage(address, receive.IP);
         }
     }
     
-    void sendMessage(String address, String ip) throws IOException {
+    void sendMessage(String address, String ip) throws IOException, ClassNotFoundException {
     	cs = new ClientSerial();
     	cs.IP = ip;
     	cs.address = address;
@@ -74,7 +77,21 @@ public class Client {
     	cs.IP = "";
     	cs.address ="";
     	System.out.println("Waiting for server repsonse...");
-    	String serverResponse = in.readLine();
+    	receive = null;
+        receive = (ClientSerial) in.readObject();
+        //String serverResponse = in.readLine();
+        System.out.println("Server: " + receive.IP + " " + receive.address ); 
+        //String[] splitServerResponse = serverResponse.split(";");
+        if(receive.address.equals(address)) {
+        	System.out.println("=================");
+        	System.out.println(">> " + receive.IP + "  " + receive.address);
+        	System.out.println("=================");
+        }
+        else {        	
+        	System.out.println("\n" + receive.IP + "\t" + receive.address);
+        	sendMessage(address, receive.IP);
+        }
+    	/*String serverResponse = in.readLine();
     	System.out.println("Server: " + serverResponse);
     	String[] splitServerResponse = serverResponse.split(";");
     	if(splitServerResponse[0].equals(address)) {
@@ -85,7 +102,7 @@ public class Client {
     	else {
     		System.out.println("\n" + splitServerResponse[0] + "\t" + splitServerResponse[1]);
         	sendMessage(address, splitServerResponse[1]);
-    	}
+    	}*/
     	
     }
 }
