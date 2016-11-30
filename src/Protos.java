@@ -84,6 +84,7 @@ public class Protos {
 			if (knwadr.getDmn().equals(query)) {
 				System.out.println("OK. -> " + knwadr.getDmn() + " " + knwadr.getIps());
 				foundAddress = knwadr.getDmn() + ";" + knwadr.getIps();
+				
 				found = true;
 				break;
 			}		

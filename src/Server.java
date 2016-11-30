@@ -1,4 +1,5 @@
 import java.io.*;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -6,31 +7,38 @@ public class Server {
 	ServerSocket server;
 	Socket clientSocket;
 	DataOutputStream out;
-	BufferedReader in;	
+	ObjectInputStream in;	
 	Protos protoBuf;
+	ClientSerial cs = null;
 	
     Server(int port) throws Exception{
     	System.out.println("Binding to port " + port + "...");
-        server = new ServerSocket(port);
+       // server = new ServerSocket(port);
+        InetAddress adres = InetAddress.getLocalHost();
+        server = new ServerSocket(port, 1 ,adres);
         System.out.println("Server started: " + server);
         System.out.println("Waiting for client...");
         clientSocket = server.accept();
         System.out.println("Client connected.");
         protoBuf = new Protos();
         out = new DataOutputStream(clientSocket.getOutputStream());
-        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        in = new ObjectInputStream(clientSocket.getInputStream());
     }
 
-    void readMessages() throws IOException {
+    void readMessages() throws IOException, ClassNotFoundException {
     	System.out.println("Waiting for Client message...");
-    	String clientMessage = in.readLine();
-    	System.out.println("Client: " + clientMessage);
-    	String[] splitMessage = clientMessage.split(";");
-    	System.out.println(splitMessage[0] + ", " + splitMessage[1]);
-    	System.out.println(splitMessage[1]);
+    	cs = (ClientSerial) in.readObject();
+    	//String clientMessage = in.readLine();
+    	System.out.println("Client: " + cs.IP + cs.address);
+    	//String[] splitMessage = clientMessage.split(";");
+    	//System.out.println(splitMessage[0] + ", " + splitMessage[1]);
+    	//System.out.println(splitMessage[1]);
+    	System.out.println(cs.IP + ", " + cs.address);
+    	System.out.println(cs.address);
     	
-    	String send = protoBuf.serverMessage(splitMessage[1], splitMessage[0]);
-    	System.out.println("\n" + send);
+    	String send = protoBuf.serverMessage(cs.address, cs.IP);
+    	System.out.println("\nSending:" + send);
+    	String[] splitSendMessage = send.split(";");
     	out.writeBytes(send + "\n");
     	out.flush();
     	System.out.println("Send response to Client");

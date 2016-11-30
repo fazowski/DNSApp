@@ -6,13 +6,13 @@ public class Client {
 
     private  Socket clientSocket;
     BufferedReader in;
-    DataOutputStream out;
-
+    ObjectOutputStream out;
+    ClientSerial cs;
+    
     Client (int port) throws IOException {
     	clientSocket = new Socket("localhost", port);
-    	out = new DataOutputStream(clientSocket.getOutputStream());
-    	in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-    	
+    	out = new ObjectOutputStream(clientSocket.getOutputStream());
+    	in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));   	
     }
 
     void menu() throws IOException{
@@ -42,7 +42,10 @@ public class Client {
 
     void sendMessage(String address) throws IOException {
         //Send the message to the server
-        out.writeBytes("0.0.0.0;" + address + "\n");
+    	cs = new ClientSerial();
+    	cs.IP = "0.0.0.0";
+    	cs.address = address;
+        out.writeObject(cs);
         out.flush();
         System.out.println("Send to Server: " + address);
         
@@ -62,10 +65,14 @@ public class Client {
     }
     
     void sendMessage(String address, String ip) throws IOException {
-    	out.writeBytes(ip + ";" + address + "\n");
+    	cs = new ClientSerial();
+    	cs.IP = ip;
+    	cs.address = address;
+    	out.writeObject(cs);
     	out.flush();
-    	System.out.println("Send to Server: " + address + ";" + ip);
-    	
+    	System.out.println("Send to Server: " + cs.address + ";" + cs.IP);
+    	cs.IP = "";
+    	cs.address ="";
     	System.out.println("Waiting for server repsonse...");
     	String serverResponse = in.readLine();
     	System.out.println("Server: " + serverResponse);
